@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ExcelController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -29,4 +30,10 @@ Route::middleware([
     Route::get('/info', function () {
         return view('info');
     })->name('info');
+
+    Route::get('/excel', function () {
+        return view('excel'); // Asegúrate de que la vista se llame "excel.blade.php"
+    })->name('excel');
+
+
 });

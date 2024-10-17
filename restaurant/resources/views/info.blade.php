@@ -10,7 +10,8 @@
     <x-app-layout>
         <x-slot name="header">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight text-center">
-                {{ __('Treball fet per Oriol Mariné Sevilla') }}
+                <h1 class="text-3xl font-bold text-center mb-8">Treball fet per Oriol Mariné Sevilla</h1>
+
             </h2>
         </x-slot>
 
