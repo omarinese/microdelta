@@ -1,7 +1,10 @@
 <?php
 
 use App\Http\Controllers\ExcelController;
+use App\Http\Controllers\ReservaController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ObtenerReservas;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -32,8 +35,18 @@ Route::middleware([
     })->name('info');
 
     Route::get('/excel', function () {
-        return view('excel'); // Asegúrate de que la vista se llame "excel.blade.php"
+        return view('excel');
     })->name('excel');
+
+    Route::get('reservas/obtener', [ObtenerReservas::class, 'obtenerReservas']);
+
+    // Añadir el nombre a la ruta de importación
+    Route::post('reservas/importar', [ReservaController::class, 'importar'])->name('reservas.importar');
+
+    Route::get('/reservas', [ReservaController::class, 'index'])->name('reservas');
+
+    Route::get('/reservas', [ReservaController::class, 'index'])->name('reservas');
 
 
 });
+
