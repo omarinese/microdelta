@@ -42,6 +42,26 @@
                 </ul>
             </div>
 
+            <!-- Reservas Inminentes -->
+            <div class="bg-white shadow-lg rounded-lg p-6 w-full">
+                <h2 class="font-semibold text-gray-900 text-2xl mb-4 text-center">Reservas Inminentes</h2>
+                <ul id="reservasInminentes" class="space-y-4">
+                    @forelse ($reservasInminentes as $reserva)
+                        <li class="bg-gray-50 p-4 rounded-lg shadow-md transition-transform transform hover:scale-105">
+                            <h3 class="font-medium text-gray-900">{{ $reserva->nombre_cliente }}</h3>
+                            <p class="text-sm text-gray-500">Número de personas: {{ $reserva->numero_personas }}</p>
+                            <p class="text-sm text-gray-500">Fecha de reserva: {{ $reserva->fecha_reserva instanceof \Carbon\Carbon ? $reserva->fecha_reserva->format('d/m/Y') : 'Fecha inválida' }}</p>
+                        </li>
+                    @empty
+                        <li class="bg-gray-50 p-4 rounded-lg shadow-md">
+                            <p class="text-sm text-gray-500 text-center">No hay reservas inminentes.</p>
+                        </li>
+                    @endforelse
+                </ul>
+            </div>
+
+
+
             <!-- Reservas Entrantes -->
             <div class="bg-white shadow-lg rounded-lg p-6 w-full">
                 <h2 class="font-semibold text-gray-900 text-2xl mb-4 text-center">Reservas Entrantes</h2>
@@ -60,23 +80,7 @@
                 </ul>
             </div>
 
-            <!-- Reservas Inminentes -->
-            <div class="bg-white shadow-lg rounded-lg p-6 w-full">
-                <h2 class="font-semibold text-gray-900 text-2xl mb-4 text-center">Reservas Inminentes</h2>
-                <ul id="reservasInminentes" class="space-y-4">
-                    @forelse ($reservasInminentes as $reserva)
-                        <li class="bg-gray-50 p-4 rounded-lg shadow-md transition-transform transform hover:scale-105">
-                            <h3 class="font-medium text-gray-900">{{ $reserva->nombre_cliente }}</h3>
-                            <p class="text-sm text-gray-500">Número de personas: {{ $reserva->numero_personas }}</p>
-                            <p class="text-sm text-gray-500">Fecha de reserva: {{ $reserva->fecha_reserva instanceof \Carbon\Carbon ? $reserva->fecha_reserva->format('d/m/Y') : 'Fecha inválida' }}</p>
-                        </li>
-                    @empty
-                        <li class="bg-gray-50 p-4 rounded-lg shadow-md">
-                            <p class="text-sm text-gray-500 text-center">No hay reservas inminentes.</p>
-                        </li>
-                    @endforelse
-                </ul>
-            </div>
+
 
         </div>
     </div>

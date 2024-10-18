@@ -11,20 +11,26 @@ class ReservaController extends Controller
 {
     public function index()
     {
-        $hoy = Carbon::now();
+        $hoy = Carbon::now(); // Fecha y hora actual
 
-        // Obtener reservas pendientes
+        // Obtener reservas pendientes (estado 'pendiente')
         $reservasPendientes = Reserva::where('estado', 'pendiente')->get();
 
-        // Obtener reservas entrantes (futuras)
-        $reservasEntrantes = Reserva::where('fecha_reserva', '>', $hoy)->get();
+        // Obtener reservas entrantes (estado 'entrante' y fecha futura)
+        $reservasEntrantes = Reserva::where('estado', 'entrante')
+            ->where('fecha_reserva', '>', $hoy) // Solo futuras
+            ->get();
 
-        // Obtener reservas inminentes (por ejemplo, las que son para hoy)
-        $reservasInminentes = Reserva::whereDate('fecha_reserva', $hoy)->get();
+        // Obtener reservas inminentes (estado 'inminente' o que sean para hoy)
+        $reservasInminentes = Reserva::where(function($query) use ($hoy) {
+            $query->where('estado', 'inminente')
+                ->orWhereDate('fecha_reserva', $hoy); // También las de hoy
+        })->get();
 
         // Pasar las variables a la vista
         return view('reservas', compact('reservasPendientes', 'reservasEntrantes', 'reservasInminentes'));
     }
+
 
     public function importar(Request $request)
     {
@@ -38,6 +44,13 @@ class ReservaController extends Controller
         // Obtener la primera hoja
         $sheet = $spreadsheet->getActiveSheet();
         $data = $sheet->toArray(null, true, true, true);
+
+        // Mapear los posibles valores de estado (pendiente, inminente, entrante)
+        $estadoMap = [
+            0 => 'pendiente',   // Estado pendiente
+            1 => 'inminente',   // Estado inminente
+            2 => 'entrante',    // Estado entrante
+        ];
 
         // Procesar los datos
         foreach ($data as $row) {
@@ -72,18 +85,21 @@ class ReservaController extends Controller
                     }
                 }
 
+                // Obtener el estado en texto desde el mapeo, o asignar 'pendiente' si no coincide
+                $estado = $estadoMap[$row['E']] ?? 'pendiente'; // Por defecto, pendiente
+
                 // Crear una reserva
                 Reserva::create([
                     'nombre_cliente' => $row['B'],
                     'numero_personas' => (int)$row['C'],
                     'fecha_reserva' => $fechaReserva,
-                    'estado' => $row['E'] ?? 'Pendiente', // Asignar un estado por defecto si no existe
+                    'estado' => $estado, // Usar el estado en texto
                 ]);
             } catch (\Exception $e) {
                 dd('Error al procesar la fila: ' . json_encode($row) . ' - Mensaje: ' . $e->getMessage());
             }
         }
 
-            return redirect()->back()->with('success', 'Reservas importadas correctamente.');
+        return redirect()->back()->with('success', 'Reservas importadas correctamente.');
     }
 }
