@@ -9,7 +9,7 @@ class ObtenerReservas extends Controller
 {
     public function obtenerReservas()
     {
-        $reservas = Reserva::all(); // Obtén todas las reservas
+        $reservas = Reserva::all();
         return response()->json($reservas);
     }
 }

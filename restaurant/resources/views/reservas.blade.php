@@ -8,7 +8,6 @@
     <div class="flex justify-center px-4 sm:px-6 lg:px-8">
         <div class="mt-8 w-full max-w-full grid grid-cols-1 md:grid-cols-3 gap-8">
 
-            <!-- Formulario de Importación -->
             <div class="col-span-1 md:col-span-3 mb-8">
                 <form action="{{ route('reservas.importar') }}" method="POST" enctype="multipart/form-data" class="bg-white shadow-md rounded-lg p-6">
                     @csrf
@@ -30,12 +29,13 @@
                 <ul id="reservasEntrantes" class="space-y-4">
                     @foreach ($reservasEntrantes as $reserva)
                         <li id="reserva-{{ $reserva->id }}" class="bg-gray-50 p-4 rounded-lg shadow-md flex justify-between items-center">
-                            <div>
+
+                            <div class="flex-grow text-center">
                                 <h3 class="font-medium text-gray-900">{{ $reserva->nombre_cliente }}</h3>
                                 <p class="text-sm text-gray-500">Número de personas: {{ $reserva->numero_personas }}</p>
                                 <p class="text-sm text-gray-500">Fecha de reserva: {{ $reserva->fecha_reserva }}</p>
                             </div>
-                            <button onclick="cambiarEstado('{{ $reserva->id }}', 'siguiente')" class="text-blue-500 hover:text-blue-700">
+                            <button onclick="cambiarEstado('{{ $reserva->id }}', 'siguiente')" class="text-blue-500 hover:text-blue-700 flex-shrink-0">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                                 </svg>
@@ -51,17 +51,17 @@
                 <ul id="reservasInminentes" class="space-y-4">
                     @foreach ($reservasInminentes as $reserva)
                         <li id="reserva-{{ $reserva->id }}" class="bg-gray-50 p-4 rounded-lg shadow-md flex justify-between items-center">
-                            <button onclick="cambiarEstado('{{ $reserva->id }}', 'anterior')" class="text-blue-500 hover:text-blue-700">
+                            <button onclick="cambiarEstado('{{ $reserva->id }}', 'anterior')" class="text-blue-500 hover:text-blue-700 flex-shrink-0">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                                 </svg>
                             </button>
-                            <div>
+                            <div class="flex-grow text-center">
                                 <h3 class="font-medium text-gray-900">{{ $reserva->nombre_cliente }}</h3>
                                 <p class="text-sm text-gray-500">Número de personas: {{ $reserva->numero_personas }}</p>
                                 <p class="text-sm text-gray-500">Fecha de reserva: {{ $reserva->fecha_reserva }}</p>
                             </div>
-                            <button onclick="cambiarEstado('{{ $reserva->id }}', 'siguiente')" class="text-blue-500 hover:text-blue-700">
+                            <button onclick="cambiarEstado('{{ $reserva->id }}', 'siguiente')" class="text-blue-500 hover:text-blue-700 flex-shrink-0">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                                 </svg>
@@ -72,17 +72,17 @@
             </div>
 
             <!-- Reservas Pendientes -->
-            <div class="bg-white shadow-lg rounded-lg p-6 w-full">
+            <div class="bg-white shadow-lg rounded-lg p-6 w-full mb-4">
                 <h2 class="font-semibold text-gray-900 text-2xl mb-4 text-center">Reservas Pendientes</h2>
                 <ul id="reservasPendientes" class="space-y-4">
                     @foreach ($reservasPendientes as $reserva)
                         <li id="reserva-{{ $reserva->id }}" class="bg-gray-50 p-4 rounded-lg shadow-md flex justify-between items-center">
-                            <button onclick="cambiarEstado('{{ $reserva->id }}', 'anterior')" class="text-blue-500 hover:text-blue-700">
+                            <button onclick="cambiarEstado('{{ $reserva->id }}', 'anterior')" class="text-blue-500 hover:text-blue-700 flex-shrink-0">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                                 </svg>
                             </button>
-                            <div>
+                            <div class="flex-grow text-center">
                                 <h3 class="font-medium text-gray-900">{{ $reserva->nombre_cliente }}</h3>
                                 <p class="text-sm text-gray-500">Número de personas: {{ $reserva->numero_personas }}</p>
                                 <p class="text-sm text-gray-500">Fecha de reserva: {{ $reserva->fecha_reserva }}</p>
@@ -93,8 +93,8 @@
             </div>
         </div>
     </div>
-</x-app-layout>
 
+</x-app-layout>
 <script>
     function cambiarEstado(reservaId, direccion) {
         fetch(`/reservas/${reservaId}/mover`, {
@@ -113,7 +113,6 @@
             })
             .then(data => {
                 if (data.success) {
-                    // Actualizar la vista sin recargar
                     actualizarVista(data.reserva);
                 } else {
                     alert('Error al mover la reserva');
@@ -126,13 +125,12 @@
     }
 
     function actualizarVista(reserva) {
-        // Eliminar la reserva de la lista original
         const reservaElement = document.getElementById(`reserva-${reserva.id}`);
         if (reservaElement) {
             reservaElement.remove();
         }
 
-        // Añadir la reserva a la nueva lista según el nuevo estado
+
         let nuevoEstado = '';
         if (reserva.estado === 'inminente') {
             nuevoEstado = 'reservasInminentes';
@@ -147,19 +145,19 @@
         li.id = `reserva-${reserva.id}`;
         li.className = 'bg-gray-50 p-4 rounded-lg shadow-md flex justify-between items-center';
         li.innerHTML = `
-            <div>
+            ${reserva.estado !== 'entrante' ? `<button onclick="cambiarEstado('${reserva.id}', 'anterior')" class="text-blue-500 hover:text-blue-700">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+            </button>` : ''}
+            <div class="flex-grow text-center">
                 <h3 class="font-medium text-gray-900">${reserva.nombre_cliente}</h3>
                 <p class="text-sm text-gray-500">Número de personas: ${reserva.numero_personas}</p>
                 <p class="text-sm text-gray-500">Fecha de reserva: ${reserva.fecha_reserva}</p>
             </div>
-            ${reserva.estado === 'entrante' ? `<button onclick="cambiarEstado('${reserva.id}', 'siguiente')" class="text-blue-500 hover:text-blue-700">
+            ${reserva.estado !== 'pendiente' ? `<button onclick="cambiarEstado('${reserva.id}', 'siguiente')" class="text-blue-500 hover:text-blue-700">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                </svg>
-            </button>` : ''}
-            ${reserva.estado === 'inminente' ? `<button onclick="cambiarEstado('${reserva.id}', 'anterior')" class="text-blue-500 hover:text-blue-700">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                 </svg>
             </button>` : ''}
         `;

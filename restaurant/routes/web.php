@@ -42,7 +42,7 @@ Route::middleware([
 
     Route::post('/reservas/{id}/mover', [ReservaController::class, 'mover'])->name('reservas.mover');
 
-    // Añadir el nombre a la ruta de importación
+
     Route::post('reservas/importar', [ReservaController::class, 'importar'])->name('reservas.importar');
 
     Route::get('/reservas', [ReservaController::class, 'index'])->name('reservas');
