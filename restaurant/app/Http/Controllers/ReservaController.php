@@ -104,4 +104,34 @@ class ReservaController extends Controller
     }
 
 
+    public function mover(Request $request, $id)
+    {
+        $reserva = Reserva::find($id);
+
+        if (!$reserva) {
+            return response()->json(['success' => false, 'message' => 'Reserva no encontrada']);
+        }
+
+        // Cambiar el estado según la dirección
+        if ($request->direccion === 'siguiente') {
+            // Lógica para mover a la siguiente categoría
+            if ($reserva->estado === 'entrante') {
+                $reserva->estado = 'inminente';
+            } elseif ($reserva->estado === 'inminente') {
+                $reserva->estado = 'pendiente';
+            }
+        } else {
+            // Lógica para mover a la anterior categoría
+            if ($reserva->estado === 'inminente') {
+                $reserva->estado = 'entrante';
+            } elseif ($reserva->estado === 'pendiente') {
+                $reserva->estado = 'inminente';
+            }
+        }
+
+        $reserva->save();
+
+        return response()->json(['success' => true, 'reserva' => $reserva]);
+    }
+
 }
